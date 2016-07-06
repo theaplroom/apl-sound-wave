@@ -40,6 +40,8 @@
         ⍝ ⍵ ←→ name of file or buffer of wav data
         ⍝ ⍺ ←→ mode (combination of SND_ enumeration)
           ⍺←0
+          ps←{}
+          t←(⎕IO+0=10|⎕DR ⍵)⊃'I1[]' '0T'
           bin←'ps'⎕NA'Winmm|PlaySound* <',t,' I U'
           ps ⍵ 0 ⍺
       }

@@ -1,1 +1,17 @@
 # apl-sound-wave
+
+Simple tool to create and play wav stream from arrays of samples. The `Wave` function returns a byte array that can either be played in memory or written to file (as a `.wav` file).
+
+## Example
+
+Create and play 3 seconds of 440Hz sine wave in single channel.
+```
+      x←   1○  8192{○(⍳3×⍺)×2×⍵÷⍺}440  
+      Sound.{SND_MEMORY PlaySound Wave ⍵}⍪x 
+```
+
+Modulate previous wave across 2 channels.
+```
+      y←⍉1 2∘.○8192{○(⍳3×⍺)×2×⍵÷⍺}1
+      Sound.{SND_MEMORY PlaySound Wave ⍵}x×[1]y
+```

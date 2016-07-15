@@ -7,11 +7,16 @@ Simple tool to create and play wav stream from arrays of samples. The `Wave` fun
 Create and play 3 seconds of 440Hz sine wave in single channel.
 ```
       x←   1○  8192{○(⍳3×⍺)×2×⍵÷⍺}440  
-      Sound.{SND_MEMORY PlaySound Wave ⍵}⍪x 
+      Sound.Play x 
 ```
 
 Modulate previous wave across 2 channels.
 ```
       y←⍉1 2∘.○8192{○(⍳3×⍺)×2×⍵÷⍺}1
-      Sound.{SND_MEMORY PlaySound Wave ⍵}x×[1]y
+      Sound.Play x×[1]y
+```
+
+Add attack/release effect
+```
+      Sound.Play SoundFX.AR x×[1]y
 ```

@@ -20,3 +20,18 @@ Add attack/release effect
 ```
       Sound.Play SoundFX.AR x×[1]y
 ```
+
+Read wav file
+```
+      snd←Sound.Read '.\rooster.wav'
+      ⎕NC'snd'
+9
+      Sound.Play snd
+```
+
+Write wav file
+```
+      x←   1○  8192{○(⍳3×⍺)×2×⍵÷⍺}440  
+      '.\a4.wav'Sound.Write x 
+```
+

@@ -1,37 +1,43 @@
 # apl-sound-wave
 
-Simple tool to create and play wav stream from arrays of samples. The `Wave` function returns a byte array that can either be played in memory or written to file (as a `.wav` file).
+This project started out as a collaboration between Stuart Smith and Gilgamesh Athoraya to provide some basic signal processing tools for APL. Contributors are welcome, so feel free to join the project.
 
-## Example
+The tools are divided into three separate namespaces:
+1. #.Sound - reads/writes wav files and plays arrays of samples in memory.
+1. #.SoundFX - collection of sound effects and oscillators.
+1. #.DSP - general signal processing tools like filters and transforms
 
+## Examples
+
+Examples can be found in the namespace `#.SoundExamples`, but here are some basice commands 
 Create and play 3 seconds of 440Hz sine wave in single channel.
 ```
-      x←   1○  8192{○(⍳3×⍺)×2×⍵÷⍺}440  
-      Sound.Play x 
+      a4←#.SoundFX.Sine 440 0 3 8192  
+      Sound.Play a4 
 ```
 
 Modulate previous wave across 2 channels.
 ```
-      y←⍉1 2∘.○8192{○(⍳3×⍺)×2×⍵÷⍺}1
-      Sound.Play x×[1]y
+      z←1 90 1 8192 #.SoundFX.Autopan a4
+      rc←#.Sound.Play z 8192
 ```
 
 Add attack/release effect
 ```
-      Sound.Play SoundFX.AR x×[1]y
+      zar←.1 .2 0 sr #.SoundFX.AR z
+      #.Sound.Play zar sr
 ```
 
 Read wav file
 ```
-      snd←Sound.Read '.\rooster.wav'
+      snd←#.Sound.Read '.\wav\rooster.wav'
       ⎕NC'snd'
 9
-      Sound.Play snd
+      #.Sound.Play snd
 ```
 
 Write wav file
 ```
-      x←   1○  8192{○(⍳3×⍺)×2×⍵÷⍺}440  
-      '.\a4.wav'Sound.Write x 
+      '.\zar.wav'#.Sound.Write zar 8192 
 ```
 

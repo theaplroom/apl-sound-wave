@@ -233,21 +233,6 @@
           ⍺[lwave|⌈start+si×⍳n]
       }
 
-      Resample←{
-        ⍝ Resamples a signal so it can be played at a different sample rate. This function should
-        ⍝ be used to make modest adjustments in the sample rate rather than large changes.
-        ⍝ ⍵ ←→ signal = input signal (samples)
-        ⍝ ⍺ ←→ ratio
-        ⍝ ← ←→ resampled signal
-          ⎕IO←0
-          N←≢⍵
-          (⍺>N)∨N<2:'ratio>N or N<2'
-          Nd←⌈N÷⍺
-          inds fracs←↓0 1⊤⍺×⍳Nd
-          y+fracs×⍵[(N-1)⌊inds+1]-y←⍵[inds]
-      }
-
-
       Reverb←{
         ⍝ convolves a signal with a synthetic "impulse response" to obtain a reverb effct
         ⍝ ⍵ ←→ signal

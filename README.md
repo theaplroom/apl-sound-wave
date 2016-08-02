@@ -3,6 +3,7 @@
 This project started out as a collaboration between Stuart Smith and Gilgamesh Athoraya to provide some basic signal processing tools for APL. Contributors are welcome, so feel free to join the project.
 
 The tools are divided into three separate namespaces:
+
 1. #.Sound - reads/writes wav files and plays arrays of samples in memory.
 1. #.SoundFX - collection of sound effects and oscillators.
 1. #.DSP - general signal processing tools like filters and transforms

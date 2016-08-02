@@ -5,7 +5,7 @@
         ⍝ ⍵ ←→ signalA signalB
           ⎕IO←0
           tfm←⊃×/FFT¨↓↑⍵
-          Normalize 9○1 FFT tfm
+          z÷⌈⌿|z←9○1 FFT tfm
       }
 
 
@@ -94,7 +94,7 @@
         ⍝ ⍵ ←→ signal
           ⎕IO←0
           L M←⍺÷∨/⍺
-          taps←2×L×1⌈⌈M÷L
+          taps←L+⍣{(31<⍺)∧0=2|⍺}⊢2×L×1⌈⌈M÷L
           h←FIR taps(1÷L⌈M)
           y←h L FilterInt ⍵
           z←{⍵/⍨(M↑1)⍴⍨≢⍵}y

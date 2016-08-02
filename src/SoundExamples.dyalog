@@ -89,16 +89,6 @@
                 ⍝
     ∇
 
-    ∇ Resample;x;zi;z
-      x←#.SoundFX.Sine 4 0 2 20
-      x+←#.SoundFX.Sine 5 0 2 20
-      x+←#.SoundFX.Sine 7 0 2 20
-      z←2 1 #.DSP.Resample x
-      zi←0.5 #.SoundFX.Resample x
-     
-      ⍝
-    ∇
-
     ∇ FM_Instrument;y;rc
    ⍝ A sampling of the different kinds of sounds that can be achieved with a single algorithm.
    ⍝ Some knowledge of FM theory is necessary to use fm_instr effectively.
@@ -151,6 +141,25 @@
       rc←#.Sound.Play sig SR
     ∇
 
+    ∇ Resample;x;rc;x512;x1792;x4032;x864
+      x←#.SoundFX.Sine 100 0 2 512
+      x+←#.SoundFX.Sine 140 0 2 512
+      x+←#.SoundFX.Sine 200 0 2 512
+      x512←#.SoundFX.Normalize x   
+      ⎕←'Play wave at Fs=512Hz'
+      rc←#.Sound.Play x512 512
+      x1792←7 2 #.DSP.Resample x512
+      ⎕←'Play wave upsampled to Fs=1792Hz'
+      rc←#.Sound.Play x1792 1792
+      x4032←9 4 #.DSP.Resample x1792
+      ⎕←'Play wave upsampled to Fs=4032Hz'
+      rc←#.Sound.Play x4032 4032
+      x864←3 14 #.DSP.Resample x4032
+      ⎕←'Play wave downsampled to Fs=864Hz'
+      rc←#.Sound.Play x864 864
+      ⍝
+    ∇
+
     ∇ Reverb;⎕IO;x;z;b;rc;sig;sr
       ⎕IO←0
       ⎕←'Play dry sound'
@@ -185,7 +194,7 @@
       x←#.Sound.Read'.\wav\Toms_diner.wav'
       wave←(2*16)↑,x.Samples
       osc←wave x.SampleRate∘#.SoundFX.FM_Sample
-      rc←#.Sound.Play osc #.SoundFX.Sequencer midi (.7×dur) SR
+      rc←#.Sound.Play osc #.SoundFX.Sequencer midi(0.7×dur)SR
      ⍝
     ∇
 

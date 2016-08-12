@@ -172,7 +172,7 @@
       rc←#.Sound.Play x
       ⎕←'"artificial" reverb'
       sig sr←⊣/¨x.(Samples SampleRate)
-      z←2 sr #.SoundFX.Reverb sig
+      z←2 8 sr #.SoundFX.Reverb sig
       rc←#.Sound.Play z
       ⎕←'"natural" reverb'
       b←#.Sound.Read'.\wav\SydneyOperaHouse01.wav'

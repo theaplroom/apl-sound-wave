@@ -254,11 +254,11 @@
         ⍝ ⍺ ←→ duration sr
         ⍝ ← ←→ samples
         ⍝ signal = mono samples vector
-        ⍝ sr     = sample rate in samples per second
         ⍝ dur    = duration of impulse response in seconds
         ⍝ k      = decay constant (k=8 typical)
-          dur sr←⍺
-          impulse←1 dur 8 sr Fade Noise dur sr
+        ⍝ sr     = sample rate in samples per second
+          dur k sr←⍺
+          impulse←1 dur k sr Fade Noise dur sr
           #.DSP.Convolve ⍵ impulse
       }
 

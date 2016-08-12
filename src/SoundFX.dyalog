@@ -17,15 +17,15 @@
       }
 
       AR←{
-        ⍝ ⍵  ←→ signal
-        ⍝ ⍺  ←→ at rt type sr
-        ⍝ at ←→ attack time in seconds
-        ⍝ rt ←→ release time in seconds
-        ⍝ type ←→ 0 = linear, 1 = exponential
-        ⍝ ←  ←→ signal
-          at rt type sr←⍺
-          y←1 rt type sr Fade ⍵
-          0 at type sr Fade y
+        ⍝ ⍵ ←→ signal
+        ⍝ ⍺ ←→ at rt type sr
+        ⍝      at = attack time in seconds
+        ⍝      rt = release time in seconds
+        ⍝      k  = 0 = linear, 0< exponential
+        ⍝ ← ←→ signal
+          at rt k sr←⍺
+          y←1 rt k sr Fade ⍵
+          0 at k sr Fade y
       }
 
       Autopan←{
@@ -51,7 +51,7 @@
         ⍝ ← ←→ samples
         ⍝ overlap = duration of crossfade in seconds
         ⍝ sr      = sample rate in samples per second
-          overlap sr←⍺     
+          overlap sr←⍺
           a b←⍵
           ovlen←⌊/(≢¨a b),⌊overlap×sr
           tot←(+/≢¨a b)-ovlen
@@ -92,20 +92,35 @@
 
       Fade←{
         ⍝ ⍵   ←→ signal
-        ⍝ ⍺   ←→ dir dur type sr
+        ⍝ ⍺   ←→ dir dur k sr
         ⍝ dir ←→ 0 = in, 1 = out
         ⍝ dur ←→ duration in seconds
-        ⍝ type ←→ 0 = linear, 1 = exponential
+        ⍝ k   ←→ 0 = linear, 0< exponential
         ⍝ ← ←→ signal
           ⍺←0 1
-          dir dur type sr←⍺
+          dir dur k sr←⍺
           sig←⍵
           n←⌊dur×sr
           p←(i←⍳n⌊c←≢sig)÷n
-          p←(2*∘-8∘×∘⌽)⍣type⊢p
+          p←(2*∘-k∘×∘⌽)⍣(k>0)⊢p
           i←(c-1)-⍣dir⊢i
           ((⊂i)⌷sig)←((⊂i)⌷sig)×[0]p
           sig
+      }
+
+      FLT←{
+        ⍝ A resonant bandpass filter
+        ⍝ ⍵ ←→ sig = input signal
+        ⍝ ⍺ ←→ F D sr
+        ⍝ ← ←→ filtered signal
+        ⍝      F  = the center frequency of the filter in Hz.
+        ⍝      D  = the half-bandwidth of the filter in Hz.
+        ⍝      sr = the sample rate in samples per second (global)
+          F D sr←⍺
+          I2←-2×(*○¯2×D÷sr)×2○○4×F÷sr
+          I3←*○¯4×D÷sr
+          y←(,1)(1 I2 I3)#.DSP.Filter ⍵
+          Normalize y
       }
 
     :Section FM_Instruments
@@ -195,8 +210,8 @@
           ⎕IO←0
           lfo td vd sr←⍺
           sig←⍵
-          v←⍪lfo vd vd sr Vibrato sig 
-          t←⍪lfo td sr Tremolo v 
+          v←⍪lfo vd vd sr Vibrato sig
+          t←⍪lfo td sr Tremolo v
           lr←t(-,+)0.7×v
           ⍉↑Normalize¨↓⍉lr
       }
@@ -243,7 +258,7 @@
         ⍝ dur    = duration of impulse response in seconds
         ⍝ k      = decay constant (k=8 typical)
           dur sr←⍺
-          impulse←1 dur 1 sr Fade Noise dur sr
+          impulse←1 dur 8 sr Fade Noise dur sr
           #.DSP.Convolve ⍵ impulse
       }
 
@@ -313,7 +328,32 @@
           (0⌈⍺)×(≢⍺)↑⍵
       }
 
+      VCF←{
+        ⍝ Applies a control signal to a resonant filter
+        ⍝ to continuously update its center frequency.
+        ⍝ ⍵ ←→ signal
+        ⍝ ⍺ ←→ fl fh d ctrl sr
+        ⍝      fl   = lowest center frequency of the filter in Hz.
+        ⍝      fh   = highest center frequency of the filter in Hz.
+        ⍝      d    = half-bandwidth of the filter in Hz.
+        ⍝      ctrl = control signal [ 0,1 ]
+        ⍝      sr   = sample rate in samples per second (global)
+        ⍝ ← ←→ filtered signal
+          fl fh d ctrl sr←⍺
+          y←0 0,(≢ctrl)↑⍵
+          F←fl+ctrl×fh-fl
+          a←⍪-2×(*○¯2×d÷sr)×2○○2×F÷sr
+          a,←*○¯4×d÷sr
+          _←(↓a){0⊣y[⍵]-←+/⍺×y[⍵-1 2]}¨2↓⍳≢y
+          Normalize 2↓y
+      }
+
       Vibrato←{
+        ⍝ Adapted from:
+        ⍝ Udo Zoelzer, ed. "DAFX: Digital Audio Effects". Wiley, 2002, pp. 68-69.
+        ⍝ ISBN-10: 9780471490784 
+        ⍝ ISBN-13: 978-0471490784 
+        ⍝ ASIN: 0471490784
         ⍝ ⍵ ←→ signal
         ⍝ ⍺ ←→ Modfreq Width Delay sr
           ⎕IO←1

@@ -139,24 +139,4 @@
         NOSTOP    ← 16 ⍝ don't stop any currently playing sound
     :EndNamespace ⍝ SND
 
-    ∇ r←WAVE_FORMAT(channels sampleRate bitDepth);ba
-      r←1   ⍝ Format
-      r,←channels sampleRate
-      r,←sampleRate×ba←channels×bitDepth÷8
-      r,←ba bitDepth 0
-    ∇
-
-      Record←{
-⍝    MMRESULT waveInOpen(
-⍝    LPHWAVEIN       phwi,
-⍝    UINT            uDeviceID,
-⍝    LPCWAVEFORMATEX pwfx,
-⍝    DWORD_PTR       dwCallback,
-⍝    DWORD_PTR       dwCallbackInstance,
-⍝    DWORD           fdwOpen
-⍝    );
-          waveex←'{U2 U2 U4 U4 U2 U2 U2}'
-          wio←{}
-          _←'wio'⎕NA'U Winmm|waveInOpen >P U <',waveex,' P P U'
-      }
 :EndNamespace

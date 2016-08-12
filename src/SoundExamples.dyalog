@@ -85,8 +85,13 @@
       b←0 #.DSP.FIR 512(2800 3200÷SR÷2)
       z←b 1 #.DSP.Filter x
       rc←#.Sound.Play z
-     
-                ⍝
+     ⍝
+    ∇
+
+    ∇ FLT;sig;rc
+      ⎕←'Hit the resonant bandpass filter with a unit impulse'
+      sig←(3×SR)↑1
+      rc←#.Sound.Play 1000 0.25 SR #.SoundFX.FLT sig
     ∇
 
     ∇ FM_Instrument;y;rc
@@ -145,7 +150,7 @@
       x←#.SoundFX.Sine 100 0 2 512
       x+←#.SoundFX.Sine 140 0 2 512
       x+←#.SoundFX.Sine 200 0 2 512
-      x512←#.SoundFX.Normalize x   
+      x512←#.SoundFX.Normalize x
       ⎕←'Play wave at Fs=512Hz'
       rc←#.Sound.Play x512 512
       x1792←7 2 #.DSP.Resample x512
@@ -205,6 +210,15 @@
       rc←#.Sound.Play 3 0.2 SR #.SoundFX.Tremolo sig
       rc←#.Sound.Play 3 0.4 SR #.SoundFX.Tremolo sig
       rc←#.Sound.Play 3 0.8 SR #.SoundFX.Tremolo sig
+    ∇
+
+    ∇ VCF;ctrl;sig;rc
+      ⎕←'Make a 220 sawtooth test tone'
+      sig←#.SoundFX.Sawtooth 220 0 2 SR
+      rc←#.Sound.Play sig
+      ⎕←'"Wow" the tone'
+      ctrl←#.DSP.Hamming⌈0.5×SR
+      rc←#.Sound.Play 50 1000 50 ctrl SR #.SoundFX.VCF sig
     ∇
 
     ∇ Vibrato;sig;rc
